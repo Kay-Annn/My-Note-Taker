@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const app = express();
+const { v4: uuidv4 } = require('uuid');
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
@@ -22,8 +23,8 @@ app.get('/notes', function (req, res) {
 app.get('/api/notes', function (req, res) {
   fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
     if (!err) {
-      const obj= JSON.parse(data);;
-     res.status(200).json(obj);
+      const obj = JSON.parse(data);;
+      res.status(200).json(obj);
     } else {
       res.status(400).json(err);
     }
@@ -36,7 +37,9 @@ app.post('/api/notes', function (req, res) {
     const newUserNote = {
       title: req.body.title,
       text: req.body.text,
+      id: uuidv4(),
     }
+
 
     if (error) {
       console.log(error);
@@ -46,30 +49,53 @@ app.post('/api/notes', function (req, res) {
     console.log(parsedData)
     parsedData.push(newUserNote);
     fs.writeFile(filePath, JSON.stringify(parsedData, null, 2), (err) => {
-  
+
       if (err) {
         console.log('Failed to write updated data to file');
         return;
       }
       console.log('Updated file successfully');
       res.status(200).json(req.body)
-    
+
     });
   });
- 
+
 });
 
 
+app.delete('/api/notes/:id', function (req, res) {
+  //read all notes from the db.json file
+  fs.readFile(filePath, (error, data) => {
+    const id = req.params.id
 
-app.delete('/api/notes:id', (req, res) => res.json());
+    function removeObjectWithId(arr, id) {
+      return arr.filter((obj) => obj.id !== id);
+    }
 
+    const newArr = removeObjectWithId(JSON.parse(data), id);
 
-app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, './public/', 'index.html'));
+    fs.writeFile(filePath, JSON.stringify(newArr, null, 2), (err) => {
+
+      if (err) {
+        console.log('Failed to write updated data to file');
+        return;
+      }
+      console.log('Updated file successfully');
+      res.status(200).json(req.body)
+
+    });
+   
+  });
 });
 
-app.listen(PORT, () =>
-  console.info(`Example app listening at http://localhost:${PORT} 🚀`)
-);
+
+  app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, './public/', 'index.html'));
+  });
+
+
+  app.listen(PORT, () =>
+    console.info(`Example app listening at http://localhost:${PORT} 🚀`)
+  );
 
 

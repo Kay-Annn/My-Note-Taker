@@ -11,8 +11,6 @@ const PORT = 3000;
 const path = require('path');
 const filePath = path.join(__dirname, 'db/db.json');
 
-
-
 app.use(express.static(__dirname + '/public'));
 
 
@@ -40,10 +38,9 @@ app.post('/api/notes', function (req, res) {
       id: uuidv4(),
     }
 
-
     if (error) {
       console.log(error);
-      return;
+      res.status(500).send("Something went wrong");
     }
     const parsedData = JSON.parse(data);
     console.log(parsedData)
@@ -52,7 +49,7 @@ app.post('/api/notes', function (req, res) {
 
       if (err) {
         console.log('Failed to write updated data to file');
-        return;
+        res.status(500).send("Something went wrong");
       }
       console.log('Updated file successfully');
       res.status(200).json(req.body)
@@ -78,7 +75,7 @@ app.delete('/api/notes/:id', function (req, res) {
 
       if (err) {
         console.log('Failed to write updated data to file');
-        return;
+        res.status(500).send('Failed to write updated data to file');
       }
       console.log('Updated file successfully');
       res.status(200).json(req.body)

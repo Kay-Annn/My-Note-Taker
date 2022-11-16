@@ -16,4 +16,8 @@ This can be used as a task manager by anyone that is trying to organize their sc
 ## License 
 The MIT license is used for this application
 
+## Screenshot of Application
+![image](https://user-images.githubusercontent.com/56706010/202258290-e803c9bf-3f26-4e96-828e-5d41c8289c94.png)
+
 ## Deployment
+https://vast-badlands-81672.herokuapp.com/

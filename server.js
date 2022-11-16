@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const path = require('path');
 const filePath = path.join(__dirname, 'db/db.json');
 
